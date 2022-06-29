@@ -1,0 +1,15 @@
+1) outside config contain the information
+2) Inside config will combine the entity(structure) and the input or information(provided by outside configfile )
+
+3) this reading yaml file will be stored in the util folder , this util folder is not  a part of the pipeline 
+    this is just create to do a generic function such as reading the yaml file, reading a pickle object
+
+Ques1)) what is conguration and artifact?????
+
+configuration file is created to only provide input to the components  while artifact folder we have 
+to create to store the output of each component
+
+In the entity folder itself we have to create 2 files [configuration and artifact]  because artifact is also a entity
+
+Ques2)) 
+
