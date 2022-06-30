@@ -20,6 +20,7 @@ class pipeline:
     def start_data_ingestion(self):
         """ This function will return the DataIngestionArtifact"""
         try:
+            
             data_ingestion = DataIngestion(data_ingestion_config= self.config.get_data_ingestion_config())
             return data_ingestion.initiate_data_ingestion()
         except Exception as e:
@@ -42,6 +43,7 @@ class pipeline:
     
     def run_pipeline(self):
         try:
+            
             data_ingestion_artifact=self.start_data_ingestion()
         except Exception as e:
             raise Housing_exception(e,sys) from e

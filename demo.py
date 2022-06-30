@@ -5,9 +5,9 @@ from housing.logger import logging
 
 def main():
     try:
-        
+        logging.info("Main is starting")
         pipeline_run=pipeline()
-        pipeline_run.run_pipeline
+        pipeline_run.run_pipeline()
     except Exception as e:
         logging.error(f"{e}")
         print(e)
