@@ -1,3 +1,4 @@
+from housing.component import data_ingestion
 from  housing.config.configuration import configuration
 from housing.logger import logging
 from housing.exception import Housing_exception
@@ -16,9 +17,31 @@ class pipeline:
        except Exception as e:
            raise Housing_exception(e,sys) from e
        
-    def start_data_ingestion():
+    def start_data_ingestion(self):
         """ This function will return the DataIngestionArtifact"""
         try:
-            data_ingestion = DataIngestion(data_ingestion_config= self.c)
+            data_ingestion = DataIngestion(data_ingestion_config= self.config.get_data_ingestion_config())
+            return data_ingestion.initiate_data_ingestion()
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
+        
+    def start_data_validation(self):
+        pass
+
+    def start_data_transformation(self):
+        pass
+
+    def start_model_trainer(self):
+        pass
+
+    def start_model_evaluation(self):
+        pass
+
+    def start_model_pusher(self):
+        pass
+    
+    def run_pipeline(self):
+        try:
+            data_ingestion_artifact=self.start_data_ingestion()
         except Exception as e:
             raise Housing_exception(e,sys) from e

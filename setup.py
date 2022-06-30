@@ -5,7 +5,7 @@ from setuptools import setup
 
 #Declaring the variable for setup
 project_name="Housing-predictor"
-Version="0.0.2"
+Version="0.0.4"
 AUTHOR="Anshuman Tiwari"
 DESCRIPTION="THIS IS MY FIRST MACHINE LEARNING PROJECT"
 REQUOREMENTS_FILE_NAME="requirements.txt"
