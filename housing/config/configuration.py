@@ -1,4 +1,5 @@
 from ast import Pass
+from doctest import REPORT_CDIFF
 from sympy import EX
 from housing.entity.config_entity import *
 from housing.util.util import read_yaml
@@ -14,11 +15,12 @@ class configuration:
         try:
                 self.config_info=read_yaml(config_file_path) # return the yaml file in the form of dictionary that we have already seen in tje jupyter notebook
                 self.training_pipeline_config=self.get_training_pipeline_config() # iski jarurat tab hogi jab hum artifact_dir k andar har ek component k artifat dir design kr rhe honge check data_ingestion_artifact_dir
-                self.time_stamp=CURRENT_TIME_STAMP
+                self.time_stamp=current_time_stamp
         except Exception as e:
             raise Housing_exception(e,sys) from e
             
-    def get_data_ingestion_config(self)->DataIngestionconfig:
+    def get_data_ingestion_config(self):
+        """ This function weill return The ->DataIngestionconfig"""
         try:
             
             artifact_dir=self.training_pipeline_config.artifact_dir
@@ -35,10 +37,10 @@ class configuration:
             ###by using this we are getting the url information ,This is just a dictionary indexing by using various variable nothing else
             
             tgz_download_dir=os.path.join(data_ingestion_artifact_dir,data_ingestion_info[DATA_INGESTION_TGZ_DOWNLOAD_DIR_KEY])
-            ###This will create the tgz directory 
+            ###This will create the tgz directory  path
             
             raw_data_dir=os.path.join(data_ingestion_artifact_dir,data_ingestion_info[DATA_INGESTION_RAW_DATA_DIR_KEY])
-            ###This will create the raw data directory
+            ###This will create the raw data directory path
             
             ingested_data_dir=os.path.join(data_ingestion_artifact_dir,data_ingestion_info[DATA_INGESTION_INGESTED_DIR_NAME_KEY])
             # see this we are  creating a new folder ingested dir iske andar hum train and test csv ko rakhenge
@@ -62,11 +64,36 @@ class configuration:
         except Exception as e:
             raise Housing_exception(e,sys) from e
     
-    def get_data_validation_config(self)->DataValidationconfig:
+    def get_data_validation_config(self):
+        """This will return the ->DataValidationconfig"""
         try:
-            
-                schema_file_path=None
-                data_validation_config=DataValidationconfig(schema_file_path=schema_file_path)
+                logging.info("Data validation started")
+                artifact_dir=self.training_pipeline_config.artifact_dir
+                # creating a root directory
+                
+                data_validation_artifact_dir=os.path.join(artifact_dir,DATA_VALIDATION_ARTIFACT_DIR,self.time_stamp)
+                logging.info(f"Data validation artifact path is:[ {data_validation_artifact_dir} ]")
+                # see thr folder structure inside the root artifact dir we have the folder for the component artifact , thats what we are creating
+                
+                data_validation_info=self.config_info[DATA_VALIDATION_CONFIG_KEY]
+                
+                
+                schema_file_path=os.path.join(ROOT_DIR,data_validation_info[DATA_VALIDATION_SCHEMA_DIR_KEY],data_validation_info[DATA_VALIDATION_SCHEMA_FILE_NAME_KEY])
+                
+                logging.info(f"Schema file path created sucssfully and the file path is : [ {schema_file_path} ]")
+                
+                report_file_path=os.path.join(data_validation_artifact_dir,data_validation_info[DATA_VALIDATION_REPORT_FILE_NAME_KEY])
+                logging.info(f"report file path created sucssfully and the file path is : [ {report_file_path} ]")
+                
+                report_page_file_path=os.path.join(data_validation_artifact_dir,data_validation_info[DATA_VALIDATION_REPORT_PAGE_FILE_NAME_KEY])
+                logging.info(f"report page file path created sucssfully and the file path is : [ {report_page_file_path} ]")
+                
+                data_validation_config=DataValidationconfig(schema_file_path=schema_file_path,
+                                                            report_file_path=report_file_path,
+                                                            report_page_file_path=report_page_file_path)
+                
+                logging.info(f"Data validation completed sucessfully")
+                
                 return data_validation_config 
         except Exception as e:
             raise Housing_exception(e,sys) from e
@@ -74,8 +101,50 @@ class configuration:
     
     
     
-    def get_data_transformation_config(self)->DataTransformationconfig:
-        pass
+    def get_data_transformation_config(self):
+        """ This funtion will return the ->DataTransformationconfig"""
+        
+        try:
+            
+            artifact_dir=self.training_pipeline_config.artifact_dir
+            data_transformation_artifact_dir=os.path.join(artifact_dir,DATA_TRANSFORMATION_ARTIFACT_DIR,self.time_stamp)
+            # Thios will make the  outer artifact directory
+            logging.info(f"Outer artifact folder created and the path is: [ {data_transformation_artifact_dir} ]")
+            
+            data_transformation_info=self.config_info[DATA_TRANSFORMATION_CONFIG_KEY]
+            # tHIS WILL PROVIDE THE KEY SO THET WE CAN ACCESS THE THIS ENTITY 
+            
+            transformed_dir_key=os.path.join(data_transformation_artifact_dir,data_transformation_info[DATA_TRANSFORMATION_DIR_NAME_KEY])
+            # THSI WILLN CREATE A DIRECTORY INSIDE THE ARTIFACT->DATA_TRANSFORMATION-> , TO STORE THE TRANSFORMED  TRAIN AND TEST FILE
+            
+            transformed_train_data_dir=os.path.join(data_transformation_artifact_dir,transformed_dir_key,data_transformation_info[DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY])
+            transformed_test_data_dir=os.path.join(data_transformation_artifact_dir,transformed_dir_key,data_transformation_info[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY])
+            # THIS WILL CREATE THE TRANSFORMED TRAIN AND TEST FILE PATH
+            logging.info(f"Transformed train dir is created and the path is: [ {transformed_train_data_dir} ]")
+            logging.info(f"Transformed test dir is created and the path is: [ {transformed_test_data_dir} ]")
+            
+            add_bedroom_per_room=data_transformation_info[DATA_TRANSFORMATION_ADD_BEDROOM_PER_ROOM_KEY]
+            #PREPEARING THE PARAMETER add_bedroom_per_room
+            
+            preprocessed_object_file_path=os.path.join(data_transformation_artifact_dir,data_transformation_info[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY],data_transformation_info[DATA_TRANSFORMATION_PREPROCESSED_FILE_NAME_KEY])
+            
+            data_transformation_config=DataTransformationconfig(add_bedroom_per_room=add_bedroom_per_room,
+                                                                tranformed_train_dir=transformed_train_data_dir,
+                                                                transformed_test_dir=transformed_test_data_dir,
+                                                                preprocessed_object_file_path=preprocessed_object_file_path)
+            logging.info(f"Data Transformation config : {data_transformation_config}")
+            return data_transformation_config
+  
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
+                
+        
+        
+        
+        
+        
+        
+        
     def get_model_trainer_config(self)->ModelTrainingconfig:
         pass
     def get_model_evaluation_config(self)->ModelEvaluation:

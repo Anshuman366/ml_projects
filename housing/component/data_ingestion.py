@@ -1,3 +1,4 @@
+import imp
 from housing.config.configuration import configuration
 from housing.entity.config_entity import DataIngestionconfig
 from housing.exception import Housing_exception
@@ -19,6 +20,7 @@ class DataIngestion:
         
     def download_housing_data(self):
         try:
+            #raise Exception("Testing Exception")
             ## accessing the url to download the content
             download_url=self.data_ingestion_config.dataset_download_url
             
@@ -115,6 +117,7 @@ class DataIngestion:
             
             
             # Thos split will create a object of StratifiedShuffleSplit will will take n_split as parameter 
+            # and the distribution of train and test will remail same
             split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 
 
