@@ -1,6 +1,7 @@
 from sklearn.pipeline import Pipeline
-from sympy import im
-from housing.pipeline.pipeline import pipeline
+
+import os
+from housing.pipeline.pipeline import Pipeline
 from housing.logger import logging
 from housing.config.configuration import configuration
 from housing.component.data_transformation import DataTransformation
@@ -8,8 +9,9 @@ from housing.component.data_transformation import DataTransformation
 def main():
     try:
         #logging.info("Pipeline stsrts")
-        Pipeline=pipeline()
-        Pipeline.run_pipeline()
+        config_path=os.path.join("config","config.yaml")
+        pipeline=Pipeline(configuration(config_file_path=config_path))
+        pipeline.run_pipeline()
         #config=configuration()
         #data_transformation_config=config.get_data_transformation_config()
         #print(data_transformation_config)

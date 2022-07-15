@@ -8,11 +8,11 @@ DataValidationconfig=namedtuple("DataValidationconfig",["schema_file_path","repo
 
 DataTransformationconfig=namedtuple("DataTransformationconfig",["add_bedroom_per_room","tranformed_train_dir","transformed_test_dir","preprocessed_object_file_path"])
 
-ModelTrainingconfig=namedtuple("ModelTrainingconfig",["trained_model_file_path","base_accuracy"])
+ModelTrainingconfig=namedtuple("ModelTrainingconfig",["trained_model_file_path","base_accuracy","model_config_file_path"])
 
-ModelEvaluation=namedtuple("ModelEvaluation",["model_evaluation_file_path","time_stamp"])
+ModelEvaluationConfig=namedtuple("ModelEvaluationConfig",["model_evaluation_file_path","time_stamp"])
 
-ModelPusherconfig=namedtuple("ModelPusherconfig",["export_dir_path"])
+ModelPusherConfig=namedtuple("ModelPusherConfig",["export_dir_path"])
 
 TrainingPipelineconfig=namedtuple("TrainingPipelineconfig",["artifact_dir"])
 

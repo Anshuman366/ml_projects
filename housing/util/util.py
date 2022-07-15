@@ -6,7 +6,24 @@ import dill
 import pandas as pd
 from housing.constants import *
 
-def read_yaml(file_path:str)->dict:
+
+
+
+def write_yaml_file(file_path:str,data:dict=None):
+    """
+    Create yaml file 
+    file_path: str
+    data: dict
+    """
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path,"w") as yaml_file:
+            if data is not None:
+                yaml.dump(data,yaml_file)
+    except Exception as e:
+        raise Housing_exception(e,sys)
+
+def read_yaml(file_path:str):
     try:
         with open(file_path,"rb") as yaml_file:
             return yaml.safe_load(yaml_file)
@@ -29,7 +46,7 @@ def save_numpy_array_data(file_path: str, array: np.array):
         raise Housing_exception(e, sys) from e
     
 # function to load the numpy array 
-def load_numpy_array_data(file_path: str) -> np.array:
+def load_numpy_array_data(file_path: str) :#-> np.array:
     """
     load numpy array data from file
     file_path: str location of file to load
@@ -81,6 +98,17 @@ def load_data(file_path:str,schema_file_path:str):
                 raise Exception(error_message)
             return dataframe
             
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
+        
+        
+def load_object(file_path:str):
+        """
+        file_path: str
+        """
+        try:
+            with open(file_path, "rb") as file_obj:
+                return dill.load(file_obj)
         except Exception as e:
             raise Housing_exception(e,sys) from e
         

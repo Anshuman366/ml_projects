@@ -7,6 +7,7 @@ from housing.constants import *
 from housing.exception import Housing_exception
 from housing.logger import logging
 
+
 import sys
 
 class configuration:
@@ -138,19 +139,78 @@ class configuration:
         except Exception as e:
             raise Housing_exception(e,sys) from e
                 
+   
         
+    def get_model_trainer_config(self):
+        """->ModelTrainingconfig:"""
+        try:
+            # getting pipeline level artifact dir
+            artifact_dir=self.training_pipeline_config.artifact_dir
+            
+            #getting model_training_artifact_dir inside the artifact_dir
+            model_training_artifact_dir=os.path.join(artifact_dir,MODEL_TRAINER_ARTIFACT_DIR_KEY,self.time_stamp)
+            
+            #now we have to get the actual path of the file
+            model_trainer_config_info=self.config_info[MODEL_TRAINER_CONFIG_KEY]
+            logging.info("Getting Model Trainer File Path")
+            model_trainer_file_path=os.path.join(model_training_artifact_dir
+                                                 ,model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_DIR_KEY]
+                                                ,model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY])
+            
+            logging.info(f"Model trainer file path is :[{model_trainer_file_path}]")
+            # now we will have to get the base accuracy
+            base_accuracy=model_trainer_config_info[MODEL_TRAINER_BASE_ACCURACY_KEY]
+            
+            # we will also provid the path of model.yaml file 
+            model_config_file_path = os.path.join(model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_DIR_KEY],
+                                                 model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY])
+            
+            # fillinhg the form of modeltrainerconfig
+            model_trainer_config=ModelTrainingconfig(trained_model_file_path=model_trainer_file_path,
+                                                     base_accuracy=base_accuracy,
+                                                     model_config_file_path=model_config_file_path)
+            logging.info(f"Model Training Config: [{model_trainer_config}]")
+            return model_trainer_config
+            
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
         
+
+
+    def get_model_evaluation_config(self):
+        try:
+            model_evaluation_config = self.config_info[MODEL_EVALUATION_CONFIG_KEY]
+            artifact_dir = os.path.join(self.training_pipeline_config.artifact_dir,
+                                        MODEL_EVALUATION_ARTIFACT_DIR, )
+
+            model_evaluation_file_path = os.path.join(artifact_dir,
+                                                    model_evaluation_config[MODEL_EVALUATION_FILE_NAME_KEY])
+            response = ModelEvaluationConfig(model_evaluation_file_path=model_evaluation_file_path,
+                                            time_stamp=self.time_stamp)
+            
+            
+            logging.info(f"Model Evaluation Config: {response}.")
+            return response
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
+
+
+    def get_model_pusher_config(self):#-> ModelPusherConfig:
+        try:
+            time_stamp = f"{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            model_pusher_config_info = self.config_info[MODEL_PUSHER_CONFIG_KEY]
+            
+            # we will create a seperate folder outside
+            export_dir_path = os.path.join(ROOT_DIR, model_pusher_config_info[MODEL_PUSHER_MODEL_EXPORT_DIR_KEY],
+                                           time_stamp)
+
+            model_pusher_config = ModelPusherConfig(export_dir_path=export_dir_path)
+            logging.info(f"Model pusher config {model_pusher_config}")
+            return model_pusher_config
+
+        except Exception as e:
+            raise Housing_exception(e,sys) from e
         
-        
-        
-        
-        
-    def get_model_trainer_config(self)->ModelTrainingconfig:
-        pass
-    def get_model_evaluation_config(self)->ModelEvaluation:
-        pass
-    def model_pusher_config(self)->ModelPusherconfig:
-        pass
     def get_training_pipeline_config(self)->TrainingPipelineconfig:
         try:
             training_pipeline_config=self.config_info[TRAINING_PIPELINE_CONFIG_KEY] # This will return the key of the pipeline , jo yaml file k andar hai
