@@ -1,6 +1,6 @@
 from ast import Pass
 from doctest import REPORT_CDIFF
-from sympy import EX
+#from sympy import EX
 from housing.entity.config_entity import *
 from housing.util.util import read_yaml
 from housing.constants import *
