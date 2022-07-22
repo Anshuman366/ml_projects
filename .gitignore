@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 notebook
+sumpy
 
 # C extensions
 *.so
