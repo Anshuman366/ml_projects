@@ -2,6 +2,7 @@
 This is first ml projec t
 
 create a virtual environment by:
+
 ```
 conda create -p env_name python==3.8 -y
 ```
